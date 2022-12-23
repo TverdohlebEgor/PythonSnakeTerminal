@@ -9,8 +9,8 @@ DIMENSION = 30
 STOPFLAG = False
 #flag usefull to stop the threads
 
-LOSESTRING = " Man you lose, that's prety disappointing \n\t  Press Enter to exit"
-WINSTRING = " Man you won, that's prety awesome \n\t  Press Enter to exit"
+LOSESTRING = "-"*42+"\n"+" Man you lose, that's prety disappointing \n\t  Press Enter to exit"+"\n"+"-"*42
+WINSTRING = "-"*42+"\n"+" Man you won, that's prety awesome \n\t  Press Enter to exit"+"\n"+"-"*42
 
 snake_dimension = 1
 
@@ -37,9 +37,7 @@ def endGame(phrase):
     
     os.system(stringClearScreen)
     
-    print("-"*42)
     print(phrase)
-    print("-"*42)
     
     STOPFLAG = True
 
