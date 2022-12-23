@@ -4,17 +4,16 @@ from pynput import keyboard
 import threading
 import random
 
-DIMENSION = 20
+DIMENSION = 50
+#dimension of the gameplan
 STOPFLAG = False
+#flag usefull to stop the threads
 
+snake_dimension = 1
 GameMatrix = [[" " for _ in range(DIMENSION)] for _ in range(DIMENSION//2 -1)]
 currentApple = None
 
-
 snake = [[DIMENSION//2-1, DIMENSION//4-1, 3]]
-#snake.append([DIMENSION//2-1, DIMENSION//4, 3])
-#snake.append([DIMENSION//2-1, DIMENSION//4+1, 3])
-#snake.append([DIMENSION//2-1, DIMENSION//4+2, 3])
 
 def printMatrix(matrix):
     os.system("clear")
@@ -53,6 +52,11 @@ def moveSnakeHead(snake,matrix):
         snake[0][1] = (snake[0][1]+1) % len(matrix)
     elif snake[0][2] == 3:
         snake[0][1] = (snake[0][1]-1) % len(matrix)
+
+    if(matrix[snake[0][1]][snake[0][0]] == "#"):
+        lose()
+        return()
+
     matrix[snake[0][1]][snake[0][0]] = "H"
  
 def moveSnakeBody(snake,matrix):
@@ -70,13 +74,15 @@ def moveSnakeBody(snake,matrix):
             snake[indSnakePart][1] = (snake[indSnakePart][1]+1) % len(matrix)
         elif snake[indSnakePart][2] == 3:
             snake[indSnakePart][1] = (snake[indSnakePart][1]-1) % len(matrix)
+        
 
         matrix[snake[indSnakePart][1]][snake[indSnakePart][0]] = "#"
     for indSnakePart in range(len(snake)-1,0,-1):
         snake[indSnakePart][2] = snake[indSnakePart-1][2] 
 
 def spawnSnakeTail(matrix):
-    newSnake = snake[-1]
+    global snake_dimension
+    newSnake = snake[-1][::1]
 
     if newSnake[2] == 0:
         newSnake[0] = (newSnake[0]-1)% len(matrix[0])
@@ -87,6 +93,7 @@ def spawnSnakeTail(matrix):
     elif newSnake[2] == 3:
         newSnake[1] = (newSnake[1]+1) % len(matrix)
 
+    snake_dimension+=1
     return newSnake
 
 def spawnApple(matrix):
@@ -96,7 +103,7 @@ def spawnApple(matrix):
         for y in range(len(matrix)):
             if(matrix[y][x] == " "):
                 applePool.append((x,y))
-    if not applePool:
+    if len(applePool) == 0:
         win()
         return
     currentApple = random.choice(applePool)
@@ -116,6 +123,8 @@ def gameInput():
                 snake[0][2] = 2
             elif event.key == keyboard.KeyCode.from_char('d') and snake[0][2] != 2:
                 snake[0][2] = 0
+                
+                
 
 
 def main():
@@ -129,20 +138,18 @@ def main():
     #2 left
     #3 up
     GameMatrix[snake[0][1]][snake[0][0]] = "H"
-    #GameMatrix[snake[1][1]][snake[1][0]] = "#"
-    #GameMatrix[snake[2][1]][snake[2][0]] = "#"
-    #GameMatrix[snake[3][1]][snake[2][0]] = "#"
-
-    INGAME = True
     
     spawnApple(GameMatrix)
 
-    for _ in range(16):
-        printMatrix(GameMatrix)    
+    while not STOPFLAG:
+        printMatrix(GameMatrix)
+        if(snake_dimension == (DIMENSION * ((DIMENSION//2)-1)) ):
+            win()
+            return
         moveSnakeHead(snake,GameMatrix)
         moveSnakeBody(snake,GameMatrix)
         if((snake[0][0],snake[0][1]) == currentApple):
-            spawnSnakeTail(GameMatrix)
+            snake.append(spawnSnakeTail(GameMatrix))
             spawnApple(GameMatrix)
     lose()
 
