@@ -150,7 +150,6 @@ def main():
         if((snake[0][0],snake[0][1]) == currentApple):
             snake.append(spawnSnakeTail(GameMatrix))
             spawnApple(GameMatrix)
-    lose()
 
 if __name__ == "__main__":
     threading.Thread(target=main).start()
