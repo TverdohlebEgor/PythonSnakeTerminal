@@ -15,8 +15,10 @@ currentApple = None
 
 snake = [[DIMENSION//2-1, DIMENSION//4-1, 3]]
 
+stringClearScreen = 'cls' if os.name == 'nt' else 'clear'
+
 def printMatrix(matrix):
-    os.system("clear")
+    os.system(stringClearScreen)
     print("-"*(DIMENSION+2))
     for line in matrix:
         print("|",end="")
@@ -28,7 +30,7 @@ def printMatrix(matrix):
 
 def lose():
     global STOPFLAG
-    os.system("clear")
+    os.system(stringClearScreen)
     print("-"*50)
     print("Man you lose, that's prety disappointing")
     print("-"*50)
@@ -36,7 +38,7 @@ def lose():
 
 def win():
     global STOPFLAG
-    os.system("clear")
+    os.system(stringClearScreen)
     print("-"*50)
     print("Bro you won thats very cool")
     print("-"*50)
@@ -123,14 +125,11 @@ def gameInput():
                 snake[0][2] = 2
             elif event.key == keyboard.KeyCode.from_char('d') and snake[0][2] != 2:
                 snake[0][2] = 0
-                
-                
-
 
 def main():
     global currentApple
 
-    os.system("clear")
+    os.system(stringClearScreen)
     #x, y, direction
     #Direction :
     #0 right
