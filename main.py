@@ -44,41 +44,24 @@ def win():
     print("-"*50)
     STOPFLAG = True
 
-def moveSnakeHead(snake,matrix):
-    matrix[snake[0][1]][snake[0][0]] = " "
-    if snake[0][2] == 0:
-        snake[0][0] = (snake[0][0]+1) % len(matrix[0])
-    elif snake[0][2] == 2:
-        snake[0][0] = (snake[0][0]-1) % len(matrix[0])
-    elif snake[0][2] == 1:
-        snake[0][1] = (snake[0][1]+1) % len(matrix)
-    elif snake[0][2] == 3:
-        snake[0][1] = (snake[0][1]-1) % len(matrix)
-
-    if(matrix[snake[0][1]][snake[0][0]] == "#"):
-        lose()
-        return()
-
-    matrix[snake[0][1]][snake[0][0]] = "H"
- 
-def moveSnakeBody(snake,matrix):
-    if(len(snake)<=1):
-        return
-    for indSnakePart in range(1,len(snake)):
+def moveSnake(snake,matrix):
+    for indSnakePart in range(len(snake)):
         matrix[snake[indSnakePart][1]][snake[indSnakePart][0]] = " "
-        #we have to move the part and then update the part
-        
+
         if snake[indSnakePart][2] == 0:
-            snake[indSnakePart][0] = (snake[indSnakePart][0]+1 )% len(matrix[0])
+            snake[indSnakePart][0] = (snake[indSnakePart][0]+1) % len(matrix[0])
         elif snake[indSnakePart][2] == 2:
             snake[indSnakePart][0] = (snake[indSnakePart][0]-1) % len(matrix[0])
         elif snake[indSnakePart][2] == 1:
             snake[indSnakePart][1] = (snake[indSnakePart][1]+1) % len(matrix)
         elif snake[indSnakePart][2] == 3:
             snake[indSnakePart][1] = (snake[indSnakePart][1]-1) % len(matrix)
+    
+        matrix[snake[indSnakePart][1]][snake[indSnakePart][0]] = "H" if indSnakePart == 0 else "#"
         
-
-        matrix[snake[indSnakePart][1]][snake[indSnakePart][0]] = "#"
+        if(matrix[snake[0][1]][snake[0][0]] == "#"):
+            lose()
+            return()
     for indSnakePart in range(len(snake)-1,0,-1):
         snake[indSnakePart][2] = snake[indSnakePart-1][2] 
 
@@ -145,8 +128,8 @@ def main():
         if(snake_dimension == (DIMENSION * ((DIMENSION//2)-1)) ):
             win()
             return
-        moveSnakeHead(snake,GameMatrix)
-        moveSnakeBody(snake,GameMatrix)
+        moveSnake(snake,GameMatrix)
+        #moveSnakeBody(snake,GameMatrix)
         if((snake[0][0],snake[0][1]) == currentApple):
             snake.append(spawnSnakeTail(GameMatrix))
             spawnApple(GameMatrix)
